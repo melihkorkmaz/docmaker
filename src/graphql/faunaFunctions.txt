@@ -1,0 +1,25 @@
+Query(Lambda("", Get(Identity())))
+
+// Login
+Query(
+  Lambda(
+    ["email", "password"],
+    Select(
+      ["secret"],
+      Login(Match(Index("unique_User_email"), Var("email")), {
+        password: Var("password")
+      })
+    )
+  )
+)
+
+// Register
+Query(
+  Lambda(
+    ["email", "password", "name"],
+    Create(Collection("User"), {
+      credentials: { password: Var("password") },
+      data: { email: Var("email"), name: Var("name") }
+    })
+  )
+)

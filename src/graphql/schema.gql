@@ -1,0 +1,19 @@
+type Tenant {
+  name: String!
+}
+
+type User {
+  email: String! @unique
+  name: String!  
+  tenant: Tenant @relation
+}
+
+type Query {
+  getCurrentUser: User! @resolver
+}
+
+
+type Mutation {
+  register(email: String!, password: String!, name: String!): User @resolver
+  login(email: String!, password: String!): String! @resolver
+}

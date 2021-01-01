@@ -1,0 +1,28 @@
+{
+  "extends": [
+    "tslint:recommended",
+    "tslint-microsoft-contrib",
+    "tslint-eslint-rules",    
+    "tslint-consistent-codestyle",
+    "tslint-config-prettier",
+    "tslint-react"
+  ], 
+  "rules" : {
+    "no-relative-imports": false,
+    "variable-name": false,
+    "jsx-wrap-multiline": false,
+    "typedef": false,
+    "no-default-export": false,
+    "no-import-side-effect": false,
+    "no-null-keyword": false,
+    "jsx-no-lambda": false,
+    "react-this-binding-issue": false,
+    "no-suspicious-comment": false,
+    "export-name": false,
+    "import-name": false,
+    "no-reserved-keywords": false,
+    "strict-boolean-expressions": false,
+    "no-useless-files": false,
+    "use-simple-attributes": false
+  }
+}
