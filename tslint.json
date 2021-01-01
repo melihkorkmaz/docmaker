@@ -23,6 +23,7 @@
     "no-reserved-keywords": false,
     "strict-boolean-expressions": false,
     "no-useless-files": false,
-    "use-simple-attributes": false
+    "use-simple-attributes": false,
+    "prefer-type-cast": false
   }
 }

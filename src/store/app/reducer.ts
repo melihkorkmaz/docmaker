@@ -9,7 +9,7 @@ const initialState = {
 const appReducer = (state: IAppState = initialState, action: IAction): IAppState => {
   switch (action.type) {
     case AppActionTypes.HandleError:
-      const error = <IErrorPayload>action.payload;
+      const error = action.payload as IErrorPayload;
       if (!error) {
         return state;
       }

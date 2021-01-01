@@ -1,5 +1,5 @@
 import { Pane, useTheme } from 'evergreen-ui';
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 
 // Components
 import PrivateRoute from '../components/PrivateRoute';
@@ -21,7 +21,8 @@ const Layout = (): JSX.Element => {
       <Switch>
         <Route exact={true} path="/sign-in" component={Login} />
         <Route exact={true} path="/sign-up" component={Register} />
-        <PrivateRoute exact={true} path="create-organization" component={CreateTenant} />
+        <PrivateRoute exact={true} path="/create-organization" component={CreateTenant} />
+        <Redirect to="/app/dashboard" />
       </Switch>
     </Pane>
   );

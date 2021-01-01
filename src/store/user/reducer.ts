@@ -14,7 +14,7 @@ const userReducer = (state: IUserState = initialState, action: IAction ): IUserS
         isAuthenticated: true,
       };
     case UserActionTypes.GetCurrentUserSucceed:
-      const user = <IUser>action.payload;
+      const user = action.payload as IUser;
 
       return {
         ...state,

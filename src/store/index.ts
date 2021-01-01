@@ -9,9 +9,9 @@ let composeEnhancers = compose
 
 if (process.env.NODE_ENV === 'development') {
   //tslint:disable:no-any
-	if (typeof (<any>window ).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function') {
+	if (typeof (window as any ).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function') {
     //tslint:disable:no-any
-		composeEnhancers = (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
+		composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
 	}
 }
 

@@ -23,7 +23,7 @@ const Login = () => {
       if(isAuthenticated) {
         history.push('/app/dashboard');
       }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, history]);
   
   return (
     <Pane
