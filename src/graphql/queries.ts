@@ -5,7 +5,11 @@ export const getCurrentUser = gql`
     getCurrentUser {
       name
       email
-      _id
+      _id,
+      tenant {
+        _id,
+        name
+      }
     }
   }
 `;

@@ -1,17 +1,22 @@
 import { Button } from 'evergreen-ui';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { userOperations } from '../../store/user';
+import { userOperations, userSelectors } from '../../store/user';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
+  const user = useSelector(userSelectors.getUser);
   
   const handleLogout = () => {
     dispatch(userOperations.logout());  
   };
   
+  if (!user) {
+    return null;
+  }
+  
   return (<div>
-    Dashboard
+    {user.name} - {user.tenant && user.tenant.name}
     <div>
       <Button onClick={handleLogout}>
         Logout

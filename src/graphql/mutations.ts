@@ -13,3 +13,17 @@ export const registerMutation = gql`
     }
   }
 `;
+
+export const createTenantMutation = gql`
+  mutation updateUser($id: ID!, $user: UserInput!) {
+    updateUser(id: $id, data: $user) {
+      _id,
+      name,
+      email,
+      tenant {
+        _id,
+        name
+      }
+    }
+  }
+`;

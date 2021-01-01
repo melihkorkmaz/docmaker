@@ -1,6 +1,6 @@
 import UserActionTypes from './types';
 
-import { IUser } from '../../utility/interfaces';
+import { ITenant, IUser } from '../../utility/interfaces';
 import { IAction } from './interfaces';
 
 export const loginSucceed = (): IAction => ({
@@ -14,4 +14,9 @@ export const getCurrentUser = (user: IUser): IAction => ({
 
 export const logoutSucceed = (): IAction => ({
   type: UserActionTypes.LogoutSucceed,
+});
+
+export const createTenant = (tenant: ITenant): IAction => ({
+  type: UserActionTypes.CreateTenantSucceed,
+  payload: tenant,
 })

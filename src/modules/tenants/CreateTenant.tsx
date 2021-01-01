@@ -1,13 +1,27 @@
 import { Button, Heading, majorScale, Pane, TextInputField, useTheme } from 'evergreen-ui';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+
+import { userOperations, userSelectors } from '../../store/user';
 
 const CreateTenant = () => {
-  const theme = useTheme();
+  const theme = useTheme(); 
+  const dispatch = useDispatch();
+  const history = useHistory();
   const { register, handleSubmit, errors } = useForm();
+  const user = useSelector(userSelectors.getUser);
   
   const handleRegister = (formData: { organization: string }) => {
-    // dispatch(userOperations.register(formData));
+    dispatch(userOperations.createTenant(formData.organization));
   };
+  
+  useEffect(() => {
+    if (user && user.tenant) {
+      history.push('/app/dashboard');
+    }
+  }, [user, history]);
 
   return (
     <Pane
@@ -39,7 +53,6 @@ const CreateTenant = () => {
       <form onSubmit={handleSubmit(handleRegister)}>
         <TextInputField
           label="Organization"
-          required={true}
           placeholder="Enter your organization name"
           ref={register({ required: true })}
           name="organization"

@@ -1,11 +1,23 @@
-import { Pane, useTheme } from 'evergreen-ui';
-import { Route, Switch } from 'react-router-dom';
+import { Pane,  useTheme } from 'evergreen-ui';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Route, Switch, useHistory } from 'react-router-dom';
 
 // Components
 import Dashboard from '../modules/dashboard/Dashboard';
 
+import { userSelectors } from '../store/user';
+
 const AppLayout = () => {
   const theme = useTheme();
+  const history = useHistory();
+  const user = useSelector(userSelectors.getUser);
+  
+  useEffect(() => {
+    if (user && !user.tenant) {
+      history.push('/create-organization');
+    }
+  }, [user, history]);
   
   return (
     <Pane
