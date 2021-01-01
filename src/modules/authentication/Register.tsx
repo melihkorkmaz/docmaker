@@ -1,22 +1,31 @@
 import { Button, Heading, majorScale, Pane, TextInputField, useTheme } from 'evergreen-ui';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom';
 
 // Interfaces
 import { IRegisterRequest } from '../../utility/interfaces';
 
 // Actions
-import { userOperations } from '../../store/user';
+import { userOperations, userSelectors } from '../../store/user';
 
 const Register = () => {
   const theme = useTheme();
+  const history = useHistory();
   const dispatch = useDispatch();
   const { register, handleSubmit, errors } = useForm();
+  const isAuthenticated = useSelector(userSelectors.isAuthenticated);
   
   const handleRegister = (formData: IRegisterRequest) => {
     dispatch(userOperations.register(formData));
   };
+  
+  useEffect(() => {
+    if(isAuthenticated) {
+      history.push('/app/dashboard');
+    }
+  }, [isAuthenticated, history]);
   
   return (
     <Pane
