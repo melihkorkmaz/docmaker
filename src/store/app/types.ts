@@ -1,5 +1,5 @@
 enum  AppActionTypes {
-  HandleError = 'HANDLE_ERROR',
+  SetToastMessage = 'SET_TOAST_MESSAGE',
   AppInitiated = 'APPLICATION_INITIATED',
 }
 

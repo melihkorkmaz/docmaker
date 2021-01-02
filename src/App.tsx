@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 // Components
-import ErrorToast from './components/ErrorToast';
+import ToastMessage from './components/ToastMessage';
 import Routes from './Routes';
 
 import { appOperations } from './store/app';
@@ -16,9 +16,11 @@ const App = () => {
     dispatch(appOperations.initializeApp());
   }, [dispatch]);
 
+  return null;
+  
   return (
     <>
-      <ErrorToast />
+      <ToastMessage />
       <Routes />
     </>
   );

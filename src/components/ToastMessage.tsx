@@ -4,21 +4,21 @@ import { useSelector } from 'react-redux';
 
 import { appSelectors } from '../store/app';
 
-const ErrorToast = () => {
-  const error = useSelector(appSelectors.getError);
+const ToastMessage = () => {
+  const toast = useSelector(appSelectors.getToast);
   useEffect(() => {
-    if (error) {
-      toaster.danger(
-        error?.message,
+    if (toast) {
+      toaster[toast.type](
+        toast?.message,
         {
-          description: error.description,
+          description: toast.description,
           duration: 4
         }  
       )
     }
-  }, [error]);
+  }, [toast]);
   
   return null;
 };
 
-export default ErrorToast;
+export default ToastMessage;

@@ -6,7 +6,12 @@
     "tslint-consistent-codestyle",
     "tslint-config-prettier",
     "tslint-react"
-  ], 
+  ],
+  "linterOptions": {
+    "exclude": [
+        "./functions/*.js"
+    ]
+  },
   "rules" : {
     "no-relative-imports": false,
     "variable-name": false,

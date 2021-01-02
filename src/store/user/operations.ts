@@ -11,14 +11,18 @@ import { getCurrentUser } from '../../graphql/queries';
 import { ILoginRequest, IRegisterRequest, IUser } from '../../utility/interfaces';
 import IState from '../IState';
 
+export const logout = () => (dispatch: Dispatch) => {
+  localStorage.removeItem('token');
+  setClientToken();
+  dispatch(actions.logoutSucceed());
+};
+
 export const getCurrent = () => async (dispatch: Dispatch) => {
   try {
     const data: { getCurrentUser: IUser } = await client.request(getCurrentUser);
     dispatch(actions.getCurrentUser(data.getCurrentUser));
   } catch (err) {
-    // TODO: Move logic to logout.
-    // Set client token to default;
-    setClientToken();
+    logout()(dispatch);
   }
 };
 
@@ -31,13 +35,14 @@ export const login = (request: ILoginRequest) => async (dispatch: Dispatch) => {
     await getCurrent()(dispatch)
     dispatch(actions.loginSucceed());
   } catch (err) {
-    dispatch(appActions.handleError('Login failed!', 'Email or password is incorrect'));
+    dispatch(appActions.setDangerToast('Login failed!', 'Email or password is incorrect'));
   }
 };
 
 export const register = (request: IRegisterRequest) => async (dispatch: Dispatch) => {
   try {
     await client.request(registerMutation, request);
+    dispatch(appActions.setSuccessToast('Sucess', 'You have signed up successfully!'));
     await login({ email: request.email, password: request.password })(dispatch);
   } catch (err) {
     let message = 'Unknown error!';
@@ -45,7 +50,7 @@ export const register = (request: IRegisterRequest) => async (dispatch: Dispatch
     if (err && err.message.toLowerCase().includes('instance is not unique.')) {
       message = 'This email is already registered before!'
     }
-    dispatch(appActions.handleError(message));
+    dispatch(appActions.setDangerToast(message));
   }
 };
 
@@ -77,12 +82,6 @@ export const createTenant = (name: string) => async (dispatch: Dispatch, getStat
       dispatch(actions.createTenant(data.updateUser.tenant));
     }
   } catch (err) {
-    dispatch(appActions.handleError(err.message));
+    dispatch(appActions.setDangerToast(err.message));
   }
 }
-
-export const logout = () => (dispatch: Dispatch) => {
-  localStorage.removeItem('token');
-  setClientToken();
-  dispatch(actions.logoutSucceed());
-};

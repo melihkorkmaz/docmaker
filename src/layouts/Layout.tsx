@@ -16,7 +16,7 @@ const Layout = (): JSX.Element => {
       display="flex"
       flexDirection="column"
       alignItems="center"
-      backgroundColor={theme.scales.neutral.N3}
+      backgroundColor={theme.palette.neutral.lightest}
     >
       <Switch>
         <Route exact={true} path="/sign-in" component={Login} />

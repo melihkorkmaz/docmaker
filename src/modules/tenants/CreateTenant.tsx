@@ -29,7 +29,7 @@ const CreateTenant = () => {
       display="flex"
       flexDirection="column"
       alignItems="center"
-      backgroundColor={theme.scales.neutral.N3}
+      backgroundColor={theme.palette.neutral.lightest}
     >
     <Pane
       elevation={3}

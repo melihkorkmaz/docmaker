@@ -1,5 +1,5 @@
 import IState from '../IState';
-import { IErrorPayload } from './IAction';
+import { IToastPayload } from './IAction';
 
-export const getError = (state: IState): IErrorPayload | undefined  => state.app.error;
+export const getToast = (state: IState): IToastPayload | undefined  => state.app.toast;
 export const isAppInitiated = (state: IState): boolean => state.app.initiated;

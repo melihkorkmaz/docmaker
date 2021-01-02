@@ -1,4 +1,4 @@
-import IAction, { IErrorPayload } from './IAction';
+import IAction, { IToastPayload } from './IAction';
 import IAppState from './IAppState';
 import AppActionTypes from './types';
 
@@ -8,17 +8,18 @@ const initialState = {
 
 const appReducer = (state: IAppState = initialState, action: IAction): IAppState => {
   switch (action.type) {
-    case AppActionTypes.HandleError:
-      const error = action.payload as IErrorPayload;
-      if (!error) {
+    case AppActionTypes.SetToastMessage:
+      const toast = action.payload as IToastPayload;
+      if (!toast) {
         return state;
       }
       
       return {
         ...state,
-        error: {
-          message: error.message,
-          description: error.description
+        toast: {
+          message: toast.message,
+          description: toast.description,
+          type: toast.type,
         }
       };
     case AppActionTypes.AppInitiated: 

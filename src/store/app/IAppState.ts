@@ -1,6 +1,6 @@
-import { IErrorPayload } from './IAction';
+import { IToastPayload } from './IAction';
 
 export default interface IAppState {
   initiated: boolean,
-  error?: IErrorPayload
+  toast?: IToastPayload
 }
