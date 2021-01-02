@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 // Components
-// import ToastMessage from './components/ToastMessage';
-// import Routes from './Routes';
+import ToastMessage from './components/ToastMessage';
+import Routes from './Routes';
 
 import { appOperations } from './store/app';
 
@@ -16,14 +16,12 @@ const App = () => {
     dispatch(appOperations.initializeApp());
   }, [dispatch]);
 
-  return null;
-  
-  // return (
-  //   <>
-  //     <ToastMessage />
-  //     <Routes />
-  //   </>
-  // );
+  return (
+    <>
+      <ToastMessage />
+      <Routes />
+    </>
+  );
 };
 
 export default App;
