@@ -1,5 +1,12 @@
 const AWS = require("aws-sdk");
-var Multipart = require('lambda-multipart');
+const Multipart = require('lambda-multipart');
+const parser = require('lambda-multipart-parser');
+const { uuid } = require('uuidv4');
+const mammoth = require('mammoth');
+const officeParser = require('officeparser');
+var textract = require('textract');
+var JSZip = require("jszip");
+
 
 
 const s3 = new AWS.S3({
@@ -28,56 +35,70 @@ const getFileExtension = file => {
   }
 
   const contentType = headers["content-type"];
-  if (contentType == "image/jpeg") {
-    return "jpg";
+  if (contentType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+    return "docx";
   }
 
-  throw new Error(`Unsupported content type "${contentType}".`);
+  throw new Error('Unsupported file format!');
 };
 
 const uploadFileIntoS3 = async file => {
   const ext = getFileExtension(file);
+
   const options = {
     Bucket: "docmaker-templates",
-    Key: `${uuidv4()}.${ext}`,
+    Key: `${uuid()}.${ext}`,
     Body: file
   };
 
-  try {
-    await s3.upload(options).promise();
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
+  await s3.upload(options).promise();
 };
 
 exports.handler = async (event, context, callback) => {
-  const { fields, files } = await parseMultipartFormData(event);
-  await Promise.all(
-    files.map(async file => {
-      await uploadFileIntoS3(file);
-    })
-  );
+  const result = await parser.parse(event);
+  // const { files } = await parseMultipartFormData(event);
+  // const file = files[0];
+  // // console.log('file', Buffer.isBuffer(file._readableState.buffer.tail.data));
+  const file = result.files[0];
+
+  var getParams = {
+    Bucket: 'docmaker-templates', // your bucket name,
+    Key: 'Brochure.docx' // path to the object you're looking for
+  }
+
+  s3.getObject(getParams, async (err, data) => {
+    // Handle any error and exit
+    if (err)
+      console.log(err);
+
+    let objectData = data.Body;
+    const text = (await mammoth.extractRawText({ buffer: objectData }));
+    const value = text.value.split('\\n').join('.');
+    console.log('oo', value.match(/\<<(.*?)\>>/g).map(x => x.replace('<<', '').replace('>>', '')));
+  });
+
+  // const text = (await mammoth.extractRawText({ buffer: file.content }));
+  // textract.fromBufferWithMime(file.contentType, file.content, function (err, text) {
+  //   console.log('err', err);
+  //   console.log('txt', text);
+  // })
+
 
   return {
-    successCode: 200,
-    body: JSON.stringify({ msg: 'OK' })
+    statusCode: 200,
+    body: 'text',
   }
-  // const params = {
-  //   Bucket: "docmaker-templates",
-  //   Key: `name-of-your-file.json`,
-  //   Body: JSON.stringify({ hello: "world" }),
-  //   ACL: "private",
-  //   ContentEncoding: "utf8",
-  //   ContentType: `application/json`,
-  // };
-
   // try {
-  //   const result = await s3.upload(params).promise();
-  //   return { statusCode: 200, body: JSON.stringify(result) }
+  //   await uploadFileIntoS3(file);
+  //   return {
+  //     statusCode: 200,
+  //     body: JSON.stringify({ msg: 'OK' })
+  //   }
   // } catch (err) {
-  //   return { statusCode: 500, body: err.message }
+  //   return {
+  //     statusCode: 500,
+  //     body: JSON.stringify({ msg: err.message })
+  //   }
   // }
-
 
 }

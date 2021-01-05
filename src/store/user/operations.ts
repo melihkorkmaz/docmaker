@@ -4,11 +4,12 @@ import * as actions from './actions';
 import * as selectors from './selectors';
 
 import client, { setClientToken } from '../../graphql/graphqlClient';
-import { createTenantMutation, loginMutation, registerMutation } from '../../graphql/mutations';
-import { getCurrentUser } from '../../graphql/queries';
+import { createTenantMutation } from '../../graphql/mutations';
+
+import UserModel, { IUserModel } from '../../models/UserModel';
 
 // Interfaces
-import { ILoginRequest, IRegisterRequest, IUser } from '../../utility/interfaces';
+import { IUser } from '../../utility/interfaces';
 import IState from '../IState';
 
 export const logout = () => (dispatch: Dispatch) => {
@@ -19,39 +20,43 @@ export const logout = () => (dispatch: Dispatch) => {
 
 export const getCurrent = () => async (dispatch: Dispatch) => {
   try {
-    const data: { getCurrentUser: IUser } = await client.request(getCurrentUser);
-    dispatch(actions.getCurrentUser(data.getCurrentUser));
+    const user = new UserModel();
+    await user.fetchUser();
+    dispatch(actions.getCurrentUser(user));
   } catch (err) {
     logout()(dispatch);
   }
 };
 
-export const login = (request: ILoginRequest) => async (dispatch: Dispatch) => {
-  try {
-    const data: { login: string }= await client.request(loginMutation, request);
-    const token = data.login;
-    localStorage.setItem('token', token);
-    setClientToken(token);
-    await getCurrent()(dispatch)
+export const login = (request: IUserModel) => async (dispatch: Dispatch) => {
+  const user = new UserModel({
+    email: request.email,
+    password: request.password,
+  });
+  
+  const res = await user.login();
+  
+  if (res.status) {
+    await getCurrent()(dispatch);
     dispatch(actions.loginSucceed());
-  } catch (err) {
-    dispatch(appActions.setDangerToast('Login failed!', 'Email or password is incorrect'));
+  } else {
+    dispatch(appActions.setDangerToast('Login failed!', res.error));
   }
+   
 };
 
-export const register = (request: IRegisterRequest) => async (dispatch: Dispatch) => {
-  try {
-    await client.request(registerMutation, request);
-    dispatch(appActions.setSuccessToast('Sucess', 'You have signed up successfully!'));
-    await login({ email: request.email, password: request.password })(dispatch);
-  } catch (err) {
-    let message = 'Unknown error!';
-    //tslint:disable: no-unsafe-any
-    if (err && err.message.toLowerCase().includes('instance is not unique.')) {
-      message = 'This email is already registered before!'
-    }
-    dispatch(appActions.setDangerToast(message));
-  }
+export const register = (request: IUserModel) => async (dispatch: Dispatch) => {
+  const user = new UserModel({
+    email: request.email,
+    name: request.name,
+    password: request.password
+  });
+  
+  const res = await user.save();
+  
+  return res.status ? 
+    dispatch(appActions.setSuccessToast('Sucess', 'You have signed up successfully!')):
+    dispatch(appActions.setDangerToast(res.error));
 };
 
 export const createTenant = (name: string) => async (dispatch: Dispatch, getState: () => IState) => {
@@ -62,7 +67,8 @@ export const createTenant = (name: string) => async (dispatch: Dispatch, getStat
     if (!user) {
       return;
     }
-    
+     
+    console.log('user', user)
     const variables = {
       id: user._id,
       user: {
@@ -76,11 +82,11 @@ export const createTenant = (name: string) => async (dispatch: Dispatch, getStat
       }
     };
     
-    const data: { updateUser: IUser } = await client.request(createTenantMutation, variables);
+    // const data: { updateUser: IUser } = await client.request(createTenantMutation, variables);
     
-    if (data.updateUser.tenant) {
-      dispatch(actions.createTenant(data.updateUser.tenant));
-    }
+    // if (data.updateUser.tenant) {
+    //   dispatch(actions.createTenant(data.updateUser.tenant));
+    // }
   } catch (err) {
     dispatch(appActions.setDangerToast(err.message));
   }

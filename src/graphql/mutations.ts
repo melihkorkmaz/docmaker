@@ -27,3 +27,19 @@ export const createTenantMutation = gql`
     }
   }
 `;
+
+export const createTemplateMutation = gql`
+  mutation createTemplate($name: String!, $language: String!, $tenant: ID!) {
+    createTemplate(data: {
+      name: $name,
+      language: $language,
+      tenant: {
+        connect: $tenant
+      }
+    }) {
+      _id
+      name
+      language
+    }
+  }
+`;

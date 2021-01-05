@@ -8,10 +8,15 @@ type User {
   tenant: Tenant @relation
 }
 
+type Template {
+  name: String!
+  language: String!
+  tenant: Tenant! @relation
+}
+
 type Query {
   getCurrentUser: User! @resolver
 }
-
 
 type Mutation {
   register(email: String!, password: String!, name: String!): User @resolver

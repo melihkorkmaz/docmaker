@@ -1,4 +1,5 @@
-Query(Lambda("", Get(Identity())))
+// Get User
+Query(Lambda("", Get(CurrentIdentity())))
 
 // Login
 Query(

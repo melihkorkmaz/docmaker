@@ -5,18 +5,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { userOperations, userSelectors } from '../../store/user';
 
-// Interfaces
-import { ILoginRequest } from '../../utility/interfaces';
+import { IUserModel } from '../../models/UserModel';
 
 const Login = () => {
   const theme = useTheme();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors } = useForm<IUserModel>();
   const isAuthenticated = useSelector(userSelectors.isAuthenticated);
   
-  const handleLogin = ({ email, password }: ILoginRequest) => {
-    dispatch(userOperations.login({ email, password}));
+  const handleLogin = (formData: IUserModel) => {
+    dispatch(userOperations.login(formData));
   };
   
   useEffect(() => {

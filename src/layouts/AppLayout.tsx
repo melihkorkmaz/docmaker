@@ -4,7 +4,9 @@ import { useSelector } from 'react-redux';
 import { Route, Switch, useHistory } from 'react-router-dom';
 
 // Components
+import TopHeader from '../components/TopHeader';
 import Dashboard from '../modules/dashboard/Dashboard';
+import CreateTemplate from '../modules/templates/CreateTemplate';
 
 import { userSelectors } from '../store/user';
 
@@ -30,6 +32,42 @@ const NavLink = (props: INavLinkProps) => {
   );
 };
 
+const LeftNav = () => {
+  const theme = useTheme();
+  
+  return (
+    <Pane
+      display="flex"
+      justifyContent="top"
+      alignItems="left"
+      flexDirection="column"
+      width={170}
+      height="100%"
+      backgroundColor={theme.palette.green.base}
+      paddingTop={majorScale(6)}
+    >
+      <NavLink text="Dashboard">
+        <DashboardIcon
+          color={theme.palette.neutral.lightest}
+          size={18}
+        />
+      </NavLink>
+      <NavLink text="Documents">
+        <DocumentOpenIcon
+          color={theme.palette.neutral.lightest}
+          size={18} 
+        />
+      </NavLink>
+      <NavLink text="Templates">
+        <DocumentIcon
+          color={theme.palette.neutral.lightest}
+          size={18}
+        />
+      </NavLink>
+    </Pane>
+  );
+};
+
 const AppLayout = () => {
   const theme = useTheme();
   const history = useHistory();
@@ -45,40 +83,18 @@ const AppLayout = () => {
     <Pane
       height="100%"
       display="flex"
-      backgroundColor={theme.palette.neutral.lightest}
+      backgroundColor={theme.scales.neutral.N3}
     >
-      <Pane
-        display="flex"
-        justifyContent="top"
-        alignItems="left"
-        flexDirection="column"
-        width={170}
-        height="100%"
-        backgroundColor={theme.palette.green.base}
-        paddingTop={majorScale(6)}
-      >
-        <NavLink text="Dashboard">
-          <DashboardIcon
-            color={theme.palette.neutral.lightest}
-            size={18}
-          />
-        </NavLink>
-        <NavLink text="Documents">
-          <DocumentOpenIcon
-            color={theme.palette.neutral.lightest}
-            size={18} 
-          />
-        </NavLink>
-        <NavLink text="Templates">
-          <DocumentIcon
-            color={theme.palette.neutral.lightest}
-            size={18}
-          />
-        </NavLink>
+      <LeftNav />
+      <Pane display="flex" flex="1" flexDirection="column">
+        <TopHeader />
+        <Pane marginX={majorScale(2)} marginY={majorScale(1)}>
+          <Switch>
+            <Route exact={true} path="/app/dashboard" component={Dashboard} />
+            <Route exact={true} path="/app/templates/create" component={CreateTemplate} />
+          </Switch>
+        </Pane>
       </Pane>
-      <Switch>
-        <Route exact={true} path="/app/dashboard" component={Dashboard} />
-      </Switch>
     </Pane>
   );
 };

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 
 // Interfaces
-import { IRegisterRequest } from '../../utility/interfaces';
+import { IUserModel } from '../../models/UserModel';
 
 // Actions
 import { userOperations, userSelectors } from '../../store/user';
@@ -17,7 +17,7 @@ const Register = () => {
   const { register, handleSubmit, errors } = useForm();
   const isAuthenticated = useSelector(userSelectors.isAuthenticated);
   
-  const handleRegister = (formData: IRegisterRequest) => {
+  const handleRegister = (formData: IUserModel) => {
     dispatch(userOperations.register(formData));
   };
   

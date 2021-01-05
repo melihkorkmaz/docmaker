@@ -2,6 +2,7 @@ import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 
 import appReducer from './app';
+import templateReducer from './template';
 import userReducer from './user';
 
 const enhancers: [] = []
@@ -18,6 +19,7 @@ if (process.env.NODE_ENV === 'development') {
 const allReducers = combineReducers({
   user: userReducer,
   app: appReducer,
+  template: templateReducer,
 });
 
 const store = createStore(allReducers, composeEnhancers(applyMiddleware(thunk), ...enhancers));

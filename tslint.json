@@ -29,6 +29,12 @@
     "strict-boolean-expressions": false,
     "no-useless-files": false,
     "use-simple-attributes": false,
-    "prefer-type-cast": false
+    "prefer-type-cast": false,
+    "completed-docs": false,
+    "no-submodule-imports": false,
+    "no-any": false,
+    "no-parameter-properties": false,
+    "no-for-in": false,
+    "no-for-in-array": false
   }
 }

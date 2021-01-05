@@ -1,14 +1,12 @@
 import axios from 'axios';
-import { Button } from 'evergreen-ui';
+import { useTheme } from 'evergreen-ui';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { userOperations, userSelectors } from '../../store/user';
 
+import PageTitle from '../../components/PageTitle';
 
 const Dashboard = () => {
-  const dispatch = useDispatch();
+  const theme = useTheme();
   const [file, setFile] = useState<File | undefined>();
-  const user = useSelector(userSelectors.getUser);
   
   
   const onFileChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,26 +21,22 @@ const Dashboard = () => {
     }
     
     const formData = new FormData(); 
-    formData.append( 
-      'myFile', 
+    formData.append(
+      'templateID', 
       file, 
       file?.name
     ); 
-    const res = await axios.post("/.netlify/functions/helloWorld", formData);
+    const res = await axios.post("/.netlify/functions/uploadTemplateFile", formData);
     console.log('res', res);
   };
   
-  const handleLogout = () => {
-    dispatch(userOperations.logout());  
-  };
-  
-  if (!user) {
-    return null;
-  }
-  
   return (<div>
-    {user.name} - {user.tenant && user.tenant.name}
-    <div>
+    <PageTitle>
+      Dashboard
+    </PageTitle>
+    
+    
+    {/* <div>
       <Button onClick={handleLogout}>
         Logout
       </Button>
@@ -52,7 +46,7 @@ const Dashboard = () => {
         <button onClick={onFileUpload}> 
           Upload! 
         </button> 
-    </div> 
+    </div>  */}
   </div>)
 };
 

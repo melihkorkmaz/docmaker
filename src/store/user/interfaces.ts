@@ -1,9 +1,9 @@
-import { ITenant, IUser } from '../../utility/interfaces';
+import { ITenantModel, IUser } from '../../utility/interfaces';
 import UserActionTypes from './types';
 
 export interface IAction {
   type: UserActionTypes,
-  payload?: IUser | ITenant,
+  payload?: IUser | ITenantModel,
 }
 
 export interface IUserState {
@@ -11,5 +11,5 @@ export interface IUserState {
   email?: string;
   name?: string;
   _id?: string;
-  tenant?: ITenant
+  tenant?: ITenantModel
 }

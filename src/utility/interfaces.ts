@@ -9,14 +9,19 @@ export interface ILoginRequest {
   password: string;
 }
 
-export interface ITenant {
-  _id: string;
-  name: string;
-}
-
 export interface IUser {
   _id: string;
   email: string;
   name: string;
-  tenant?: ITenant;
+  tenant?: ITenantModel;
+}
+
+export interface ITenantModel {
+  _id?: string;
+  name: string;
+}
+
+export interface IAsyncRespone {
+  status: boolean;
+  error?: string;
 }

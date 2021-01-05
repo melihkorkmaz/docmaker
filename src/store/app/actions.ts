@@ -11,7 +11,7 @@ const setToastMessage = (type: ToastType) => (message: string, description?: str
   }
 });
 
-export const setDangerToast = (message: string, description?: string): IAction => 
+export const setDangerToast = (message: string = '', description?: string): IAction => 
   setToastMessage(ToastType.Danger)(message, description);
   
 export const setSuccessToast = (message: string, description?: string): IAction => 

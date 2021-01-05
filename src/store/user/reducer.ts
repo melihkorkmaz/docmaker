@@ -1,4 +1,4 @@
-import { ITenant, IUser } from '../../utility/interfaces';
+import { ITenantModel, IUser } from '../../utility/interfaces';
 import { IAction, IUserState } from './interfaces';
 import UserActionTypes from './types';
 
@@ -26,7 +26,7 @@ const userReducer = (state: IUserState = initialState, action: IAction ): IUserS
     case UserActionTypes.LogoutSucceed:
       return initialState;
     case UserActionTypes.CreateTenantSucceed:
-      const tenant = action.payload as ITenant;
+      const tenant = action.payload as ITenantModel;
       console.log('tenant', tenant);
       return {
         ...state,
