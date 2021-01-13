@@ -1,5 +1,5 @@
 import { Button, Heading, majorScale, Pane, TextInputField, useTheme } from 'evergreen-ui';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -11,17 +11,17 @@ const CreateTenant = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { register, handleSubmit, errors } = useForm();
-  const user = useSelector(userSelectors.getUser);
+  const hasUserTenant = useSelector(userSelectors.hasUserTenant);
   
   const handleRegister = (formData: { organization: string }) => {
     dispatch(userOperations.createTenant(formData.organization));
   };
   
   useEffect(() => {
-    if (user && user.tenant) {
+    if (hasUserTenant) {
       history.push('/app/dashboard');
     }
-  }, [user, history]);
+  }, [hasUserTenant, history]);
 
   return (
     <Pane

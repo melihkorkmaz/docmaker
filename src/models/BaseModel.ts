@@ -3,26 +3,21 @@ import { RequestDocument, Variables } from "graphql-request/dist/types";
 import 'reflect-metadata';
 import { default as graphqlClient } from '../graphql/graphqlClient';
 
-
-const getProperty = <T, K extends keyof T>(obj: T, key: K) => { 
-  return obj[key];
-}
-
 type Indexable = { [key: string]: any }
 
 type Constructor<T = any> = new(...args: any[]) => T
 
 export default abstract class BaseModel<T> {
   
-  protected async requestToDB(query: RequestDocument, variables?: Variables): Promise<T | string> {
+  protected async requestToDB<D>(query: RequestDocument, variables?: Variables): Promise<T | D | string> {
     return graphqlClient.request(query, variables).then(res => {
       // tslint:disable-next-line: no-unsafe-any
       return res[Object.keys(res)[0]];
     });
   }
   
-  protected async postToAPI(endpoint: string, data?: any) {
-    return axios.post(`/.netlify/functions/${endpoint}`, data)
+  protected async postToAPI<D>(endpoint: string, data?: any): Promise<T | D | string> {
+    return axios.post(`/.netlify/functions/${endpoint}`, data).then(res => res.data)
   }
   
   protected initModel(data?: any) {

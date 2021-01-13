@@ -1,4 +1,4 @@
-import TemplateModel, { ITemplateModel } from '../../models/TemplateModel';
+import TemplateModel from '../../models/TemplateModel';
 
 import { Dispatch } from 'redux';
 import { appActions } from '../app';
@@ -8,8 +8,7 @@ import * as actions from './actions';
 
 import IState from '../IState';
 
-
-export const createTemplate = (templateFormData: ITemplateModel) => async (dispatch: Dispatch, getState: () => IState) => {
+export const createTemplate = (templateFormData: TemplateModel) => async (dispatch: Dispatch, getState: () => IState) => {
   const state = getState();
   const user = userSelectors.getUser(state);
   // tslint:disable-next-line: no-non-null-assertion
@@ -19,5 +18,24 @@ export const createTemplate = (templateFormData: ITemplateModel) => async (dispa
   const response = await template.save();
   
   response.status ? 
-    dispatch(actions.templateCreated()) : dispatch(appActions.setDangerToast(response.error));
+    dispatch(actions.templateCreated(template)) : dispatch(appActions.setDangerToast(response.error));
+};
+
+export const getTemplate = (id: string) => async (dispatch: Dispatch) => {
+  const template = new TemplateModel({ _id: id });
+  const response = await template.fetch();
+
+  response.status ? 
+    dispatch(actions.templateFetched(template)) : dispatch(appActions.setDangerToast(response.error));
+};
+
+export const updateTemplate = (template: TemplateModel) => async (dispatch: Dispatch) => {
+  const response = await template.save();
+  
+  if (response.status) {
+    dispatch(actions.templateUpdated(template));
+    dispatch(appActions.setSuccessToast('Done', 'The template has been saved successfully.'));
+  } else {
+    dispatch(appActions.setDangerToast(response.error))
+  }
 };

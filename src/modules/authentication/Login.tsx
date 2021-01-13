@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button, Heading, majorScale, Pane, TextInputField, useTheme } from 'evergreen-ui';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -5,16 +6,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { userOperations, userSelectors } from '../../store/user';
 
-import { IUserModel } from '../../models/UserModel';
+import UserModel from '../../models/UserModel';
 
 const Login = () => {
   const theme = useTheme();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { register, handleSubmit, errors } = useForm<IUserModel>();
+  const { register, handleSubmit, errors } = useForm<UserModel>();
   const isAuthenticated = useSelector(userSelectors.isAuthenticated);
   
-  const handleLogin = (formData: IUserModel) => {
+  const handleLogin = (formData: UserModel) => {
     dispatch(userOperations.login(formData));
   };
   

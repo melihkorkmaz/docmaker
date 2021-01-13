@@ -40,6 +40,40 @@ export const createTemplateMutation = gql`
       _id
       name
       language
+      tenant {
+        _id
+        name
+      }
+    }
+  }
+`;
+
+export const updateTemplateMutation = gql`
+  mutation createTemplate($id: ID!, $name: String!, $language: String!, $tenant: ID!, $parameters: [TemplateParameterInput]!) {
+    updateTemplate(
+      id: $id,
+      data: {
+        name: $name,
+        language: $language,
+        tenant: {
+          connect: $tenant
+        },
+        templateParameters: $parameters
+      }
+    ) {
+      _id,
+      name,
+      language,
+      tenant {
+        _id,
+        name
+      },
+      templateParameters {
+        key,
+        keyType,
+        label,
+        placeHolder,
+      }
     }
   }
 `;

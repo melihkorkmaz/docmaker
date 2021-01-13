@@ -1,12 +1,14 @@
-import { ITenantModel, IUser } from '../../utility/interfaces';
 import { IAction, IUserState } from './interfaces';
 import UserActionTypes from './types';
+
+import UserModel from '../../models/UserModel';
 
 const initialState = {
   isAuthenticated: false,
 };
 
 const userReducer = (state: IUserState = initialState, action: IAction ): IUserState => {
+  let user: UserModel;
   switch (action.type) {
     case UserActionTypes.LoginSucceed:
       return {
@@ -14,7 +16,7 @@ const userReducer = (state: IUserState = initialState, action: IAction ): IUserS
         isAuthenticated: true,
       };
     case UserActionTypes.GetCurrentUserSucceed:
-      const user = action.payload as IUser;
+      user = action.payload as UserModel;
 
       return {
         ...state,
@@ -26,11 +28,11 @@ const userReducer = (state: IUserState = initialState, action: IAction ): IUserS
     case UserActionTypes.LogoutSucceed:
       return initialState;
     case UserActionTypes.CreateTenantSucceed:
-      const tenant = action.payload as ITenantModel;
-      console.log('tenant', tenant);
+      user = action.payload as UserModel;
+      
       return {
         ...state,
-        tenant
+        ...user,
       };
     default:
       return state;

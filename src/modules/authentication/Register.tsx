@@ -1,11 +1,11 @@
 import { Button, Heading, majorScale, Pane, TextInputField, useTheme } from 'evergreen-ui';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 
 // Interfaces
-import { IUserModel } from '../../models/UserModel';
+import UserModel from '../../models/UserModel';
 
 // Actions
 import { userOperations, userSelectors } from '../../store/user';
@@ -17,7 +17,7 @@ const Register = () => {
   const { register, handleSubmit, errors } = useForm();
   const isAuthenticated = useSelector(userSelectors.isAuthenticated);
   
-  const handleRegister = (formData: IUserModel) => {
+  const handleRegister = (formData: UserModel) => {
     dispatch(userOperations.register(formData));
   };
   

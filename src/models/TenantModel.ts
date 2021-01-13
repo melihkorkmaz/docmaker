@@ -1,21 +1,12 @@
-import { IAsyncRespone } from '../utility/interfaces';
 import BaseModel from './BaseModel';
 
-export interface ITenantModel {
-  _id: string;
-  name: string;
-}
 
-export default class TenantModel extends BaseModel<ITenantModel> implements ITenantModel {
+export default class TenantModel extends BaseModel<TenantModel> {
   public _id = '';
   public name = '';
   
-  constructor(data?: Partial<ITenantModel>) {
+  constructor(data?: Partial<TenantModel>) {
     super();
     this.initModel(data);
   }
-  
-  // public save(): Promise<IAsyncRespone> {
-    
-  // }
 }

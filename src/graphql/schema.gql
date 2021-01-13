@@ -12,6 +12,14 @@ type Template {
   name: String!
   language: String!
   tenant: Tenant! @relation
+  templateParameters: [TemplateParameter]
+}
+
+type TemplateParameter @embedded {
+  key: String!
+  keyType: String!
+  label: String
+  placeHolder: String
 }
 
 type Query {

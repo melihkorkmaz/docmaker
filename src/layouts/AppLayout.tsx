@@ -1,5 +1,5 @@
 import { Button, DashboardIcon, DocumentIcon, DocumentOpenIcon, majorScale, Pane, Text, useTheme } from 'evergreen-ui';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Switch, useHistory } from 'react-router-dom';
 
@@ -7,6 +7,7 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 import TopHeader from '../components/TopHeader';
 import Dashboard from '../modules/dashboard/Dashboard';
 import CreateTemplate from '../modules/templates/CreateTemplate';
+import ViewTemplate from '../modules/templates/ViewTemplate';
 
 import { userSelectors } from '../store/user';
 
@@ -24,7 +25,7 @@ const NavLink = (props: INavLinkProps) => {
         <Pane display="flex" alignItems="left" width="40">
           {props.children}
         </Pane>
-        <Text fontWeight={500} color={theme.palette.neutral.lightest} marginLeft={majorScale(1)}>
+        <Text fontWeight={600} color={theme.colors.text.default} marginLeft={majorScale(1)}>
           {props.text}
         </Text>
       </Pane>
@@ -43,24 +44,27 @@ const LeftNav = () => {
       flexDirection="column"
       width={170}
       height="100%"
-      backgroundColor={theme.palette.green.base}
+      backgroundColor={theme.scales.neutral.N2}
+      borderRightColor={theme.scales.neutral.N4A}
+      borderRightWidth={1}
+      borderRightStyle="solid"
       paddingTop={majorScale(6)}
     >
       <NavLink text="Dashboard">
         <DashboardIcon
-          color={theme.palette.neutral.lightest}
+          color={theme.colors.text.default}
           size={18}
         />
       </NavLink>
       <NavLink text="Documents">
         <DocumentOpenIcon
-          color={theme.palette.neutral.lightest}
+          color={theme.colors.text.default}
           size={18} 
         />
       </NavLink>
       <NavLink text="Templates">
         <DocumentIcon
-          color={theme.palette.neutral.lightest}
+          color={theme.colors.text.default}
           size={18}
         />
       </NavLink>
@@ -69,29 +73,28 @@ const LeftNav = () => {
 };
 
 const AppLayout = () => {
-  const theme = useTheme();
   const history = useHistory();
-  const user = useSelector(userSelectors.getUser);
+  const hasUserTenant = useSelector(userSelectors.hasUserTenant);
   
   useEffect(() => {
-    if (user && !user.tenant) {
+    if (!hasUserTenant) {
       history.push('/create-organization');
     }
-  }, [user, history]);
+  }, [hasUserTenant, history]);
   
   return (
     <Pane
       height="100%"
       display="flex"
-      backgroundColor={theme.scales.neutral.N3}
     >
       <LeftNav />
       <Pane display="flex" flex="1" flexDirection="column">
         <TopHeader />
-        <Pane marginX={majorScale(2)} marginY={majorScale(1)}>
+        <Pane marginX={majorScale(2)} marginY={majorScale(1)} maxWidth={700}>
           <Switch>
             <Route exact={true} path="/app/dashboard" component={Dashboard} />
             <Route exact={true} path="/app/templates/create" component={CreateTemplate} />
+            <Route path="/app/templates/view/:id" component={ViewTemplate} />
           </Switch>
         </Pane>
       </Pane>

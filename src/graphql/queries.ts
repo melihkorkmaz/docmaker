@@ -13,3 +13,22 @@ export const getCurrentUser = gql`
     }
   }
 `;
+
+export const getTemplateById = gql`
+  query getTemplateById($id: ID!) {
+    findTemplateByID(id: $id) {
+      name,
+      language,
+      tenant {
+        _id,
+        name
+      },
+      templateParameters {
+        key,
+        keyType,
+        label,
+        placeHolder,
+      }
+    }
+  }
+`;

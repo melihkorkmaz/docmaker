@@ -3,13 +3,12 @@ import { appActions } from '../app';
 import * as actions from './actions';
 import * as selectors from './selectors';
 
-import client, { setClientToken } from '../../graphql/graphqlClient';
-import { createTenantMutation } from '../../graphql/mutations';
+import { setClientToken } from '../../graphql/graphqlClient';
 
-import UserModel, { IUserModel } from '../../models/UserModel';
+import TenantModel from '../../models/TenantModel';
+import UserModel from '../../models/UserModel';
 
 // Interfaces
-import { IUser } from '../../utility/interfaces';
 import IState from '../IState';
 
 export const logout = () => (dispatch: Dispatch) => {
@@ -28,7 +27,7 @@ export const getCurrent = () => async (dispatch: Dispatch) => {
   }
 };
 
-export const login = (request: IUserModel) => async (dispatch: Dispatch) => {
+export const login = (request: UserModel) => async (dispatch: Dispatch) => {
   const user = new UserModel({
     email: request.email,
     password: request.password,
@@ -45,7 +44,7 @@ export const login = (request: IUserModel) => async (dispatch: Dispatch) => {
    
 };
 
-export const register = (request: IUserModel) => async (dispatch: Dispatch) => {
+export const register = (request: UserModel) => async (dispatch: Dispatch) => {
   const user = new UserModel({
     email: request.email,
     name: request.name,
@@ -60,34 +59,18 @@ export const register = (request: IUserModel) => async (dispatch: Dispatch) => {
 };
 
 export const createTenant = (name: string) => async (dispatch: Dispatch, getState: () => IState) => {
-  try {
-    const state = getState();
-    const user = selectors.getUser(state);
-    
-    if (!user) {
-      return;
-    }
-     
-    console.log('user', user)
-    const variables = {
-      id: user._id,
-      user: {
-        email: user.email,
-        name: user.name,
-        tenant: {
-          create: {
-            name: name
-          }
-        }
-      }
-    };
-    
-    // const data: { updateUser: IUser } = await client.request(createTenantMutation, variables);
-    
-    // if (data.updateUser.tenant) {
-    //   dispatch(actions.createTenant(data.updateUser.tenant));
-    // }
-  } catch (err) {
-    dispatch(appActions.setDangerToast(err.message));
+  const state = getState();
+  const user = selectors.getUser(state);
+  
+  if (!user) {
+    return;
   }
+    
+  user.tenant = new TenantModel({ name });
+
+  const res = await user.createAndConnectTenans();
+
+  return res.status ? 
+    dispatch(actions.createTenant(user)) :
+    dispatch(appActions.setDangerToast(res.error));
 }

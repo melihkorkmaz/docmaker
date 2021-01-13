@@ -1,9 +1,9 @@
 import TenantModel from '../../models/TenantModel';
-import UserModel, { IUserModel } from '../../models/UserModel';
+import UserModel from '../../models/UserModel';
 import IState from '../IState';
 
 export const isAuthenticated = (state: IState): boolean => state.user.isAuthenticated;
-export const getUser = (state: IState): IUserModel | undefined => {
+export const getUser = (state: IState): UserModel | undefined => {
   if (state.user.isAuthenticated) {
     return new UserModel({
       _id: state.user._id,
@@ -11,11 +11,19 @@ export const getUser = (state: IState): IUserModel | undefined => {
       email: state.user.email,
       tenant: new TenantModel(state.user.tenant),
     });
-    
-    // if (state.user.tenant) {
-    //   user.tenant = new TenantModel(state.user.tenant);
-    // }
-    
-    // return user;
   }
 };
+
+export const hasUserTenant = (state: IState): boolean => {
+  const user = getUser(state);
+
+  if (!user || !user.tenant) {
+    return false;
+  }
+
+  if (!user.tenant._id) {
+    return false;
+  }
+
+  return true;
+}

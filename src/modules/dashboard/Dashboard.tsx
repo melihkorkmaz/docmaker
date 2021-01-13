@@ -1,34 +1,31 @@
-import axios from 'axios';
-import { useTheme } from 'evergreen-ui';
-import { useState } from 'react';
+import React from 'react';
 
 import PageTitle from '../../components/PageTitle';
 
 const Dashboard = () => {
-  const theme = useTheme();
-  const [file, setFile] = useState<File | undefined>();
+  // const [file, setFile] = useState<File | undefined>();
   
   
-  const onFileChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    if (evt.target.files && evt.target.files.length) {
-      setFile(evt.target.files[0]);
-    }
-  };
+  // const onFileChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (evt.target.files && evt.target.files.length) {
+  //     setFile(evt.target.files[0]);
+  //   }
+  // };
   
-  const onFileUpload = async () => {
-    if (!file) {
-      return;
-    }
+  // const onFileUpload = async () => {
+  //   if (!file) {
+  //     return;
+  //   }
     
-    const formData = new FormData(); 
-    formData.append(
-      'templateID', 
-      file, 
-      file?.name
-    ); 
-    const res = await axios.post("/.netlify/functions/uploadTemplateFile", formData);
-    console.log('res', res);
-  };
+  //   const formData = new FormData(); 
+  //   formData.append(
+  //     'templateID', 
+  //     file, 
+  //     file?.name
+  //   ); 
+  //   const res = await axios.post("/.netlify/functions/uploadTemplateFile", formData);
+  //   console.log('res', res);
+  // };
   
   return (<div>
     <PageTitle>

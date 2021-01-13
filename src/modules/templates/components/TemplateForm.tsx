@@ -1,21 +1,21 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Controller, useForm } from "react-hook-form";
 
 import { Button, FilePicker, FormField, majorScale, Pane, Select, TextInputField } from 'evergreen-ui';
 
-import { ITemplateModel } from '../../models/TemplateModel';
+import TemplateModel from '../../../models/TemplateModel';
 
 interface IProps {
-  template?: ITemplateModel,
+  template?: TemplateModel,
   onCancel?: (() => void);
-  onSave: ((data: ITemplateModel) => void);
+  onSave: ((data: TemplateModel) => void);
 }
 
-export default ({ template, onCancel, onSave }: IProps) => {
+const TemplateForm = ({ template, onCancel, onSave }: IProps) => {
   const [file, setFile] = useState<File | undefined>();
-  const { control, errors, handleSubmit} = useForm<ITemplateModel>();
+  const { control, errors, handleSubmit} = useForm<TemplateModel>();
 
-  const onSubmit = (data: ITemplateModel) => {
+  const onSubmit = (data: TemplateModel) => {
     if (file) {
       data.file = file;
     }
@@ -46,14 +46,14 @@ export default ({ template, onCancel, onSave }: IProps) => {
         <Controller
           name="language"
           control={control}
-          defaultValue={template ? template.name : 'en'}
+          defaultValue={template ? template.language : 'en'}
           rules={{ required: true }}
           render={props =>
             <Select width="100%" value={props.value} onChange={props.onChange}>
               <option value="en">English</option>
               <option value="tr">Turkish</option>
             </Select>
-          } // props contains: onChange, onBlur and value
+          }
         />
       </FormField>
       
@@ -67,6 +67,7 @@ export default ({ template, onCancel, onSave }: IProps) => {
             }
           }}
           placeholder="Select the file here!"
+          accept=".docx"
         />
       </FormField>
       <Pane display="flex" flexDirection="row-reverse">
@@ -81,4 +82,6 @@ export default ({ template, onCancel, onSave }: IProps) => {
       </Pane>
     </form>
   );
-}
+};
+
+export default TemplateForm;

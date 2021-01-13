@@ -1,27 +1,20 @@
 import { setClientToken } from '../graphql/graphqlClient';
 import BaseModel from './BaseModel';
-import TenantModel, { ITenantModel } from './TenantModel';
+import TenantModel from './TenantModel';
 
-import { loginMutation, registerMutation } from '../graphql/mutations';
+import { createTenantMutation, loginMutation, registerMutation } from '../graphql/mutations';
 import { getCurrentUser } from '../graphql/queries';
 
 import { IAsyncRespone } from '../utility/interfaces';
 
-export interface IUserModel {
-  _id: string;
-  password: string;
-  name: string;
-  email: string;
-  tenant?: ITenantModel;
-}
-
-export default class UserModel extends BaseModel<IUserModel> implements IUserModel {
+export default class UserModel extends BaseModel<UserModel> {
   public _id = '';
   public name = '';
   public email = '';
   public password = '';
+  public tenant?: TenantModel;
   
-  constructor(data?: Partial<IUserModel>) {
+  constructor(data?: Partial<UserModel>) {
     super();
     this.initModel(data);
   }
@@ -35,7 +28,7 @@ export default class UserModel extends BaseModel<IUserModel> implements IUserMod
       };
       
       try {
-        const res = await this.requestToDB(registerMutation, variables) as IUserModel;
+        const res = await this.requestToDB(registerMutation, variables) as UserModel;
         this._id = res._id;
         
         return { status: true };
@@ -75,12 +68,46 @@ export default class UserModel extends BaseModel<IUserModel> implements IUserMod
   
   public async fetchUser() {
     try {
-      const res = await this.requestToDB(getCurrentUser) as IUserModel;
+      const res = await this.requestToDB(getCurrentUser) as UserModel;
+      
       this.initModel(res);
       
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
-  }  
+  }
+
+  public async createAndConnectTenans(): Promise<IAsyncRespone> {
+    if (!this.tenant) {
+      throw new Error('Set tenant first!');
+    }
+
+
+    const variables = {
+      id: this._id,
+      user: {
+        email: this.email,
+        name: this.name,
+        tenant: {
+          create: {
+            name: this.tenant.name
+          }
+        }
+      }
+    };
+    
+    try {
+      const data = await this.requestToDB(createTenantMutation, variables) as UserModel;
+      this.tenant = new TenantModel(data.tenant);
+
+      return {
+        status: true
+      }
+    } catch (err) {
+      console.log(err);
+
+      return { status: false, error: 'Unexpected error!'};
+    }
+  }
 }
 
