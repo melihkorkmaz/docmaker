@@ -1,5 +1,11 @@
 const AWS = require("aws-sdk");
+const Sentry = require("@sentry/serverless");
 require('dotenv').config();
+
+Sentry.AWSLambda.init({
+  dsn: process.env.SENTRY_DSN,
+  tracesSampleRate: 1.0,
+});
 
 AWS.config.update({
   accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
@@ -23,18 +29,15 @@ const createUrl = (params) => {
       return resolve(url);
     });
   })
-}
+};
 
-
-exports.handler = async (event, context) => {
+exports.handler = Sentry.AWSLambda.wrapHandler(async (event, context) => {
   var params = JSON.parse(event.body);
 
   const s3Params = {
     Bucket: params.tenantId,
     Key: params.name,
     Expires: 60,
-    // ContentType: params.type,
-    // ACL: 'public-read',
   };
 
   try {
@@ -45,9 +48,10 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({ url })
     }
   } catch (err) {
+    Sentry.captureException(err);
     return {
       statusCode: 500,
       body: JSON.stringify({ msg: err.message })
     }    
   }
-}
+});

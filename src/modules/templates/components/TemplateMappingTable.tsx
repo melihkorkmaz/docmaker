@@ -92,7 +92,7 @@ const TemplateMappingTable = ({ parameters, onSave }: IProps) => {
                   onChange={(evt: React.FormEvent<HTMLInputElement>) => {
                     handleLabelChange(parameter.key, evt.currentTarget.value);
                   }}
-                  value={getLabelValue(parameter.key)}
+                  value={getLabelValue(parameter.key) || ''}
                 />
               </Table.TextCell>
               <Table.TextCell >
@@ -102,7 +102,7 @@ const TemplateMappingTable = ({ parameters, onSave }: IProps) => {
                   onChange={(evt: React.FormEvent<HTMLInputElement>) => {
                     handlePlaceHolderChange(parameter.key, evt.currentTarget.value);
                   }}
-                  value={getPlaceHolderValue(parameter.key)}
+                  value={getPlaceHolderValue(parameter.key) || ''}
                 />
               </Table.TextCell>
             </Table.Row>
