@@ -3,10 +3,10 @@ import TemplateActionTypes from './types';
 
 export interface IAction {
   type: TemplateActionTypes,
-  payload?: string | TemplateModel,
+  payload?: string | TemplateModel | TemplateModel[],
 }
 
 export interface ITemplateState {
-  templates?: [string],
+  all?: TemplateModel[],
   currentTemplate?: TemplateModel,
 }

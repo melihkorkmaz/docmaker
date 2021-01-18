@@ -26,4 +26,10 @@ export const hasUserTenant = (state: IState): boolean => {
   }
 
   return true;
+};
+
+export const getTenant = (state: IState): TenantModel | undefined => {
+  if (state.user.tenant) {
+    return new TenantModel(state.user.tenant);
+  }
 }

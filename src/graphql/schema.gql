@@ -1,18 +1,22 @@
 type Tenant {
   name: String!
+  templates: [Template] @relation
+  users: [User] @relation
+  documents: [Document] @relation
 }
 
 type User {
   email: String! @unique
-  name: String!  
+  name: String!
   tenant: Tenant @relation
 }
 
 type Template {
   name: String!
   language: String!
-  tenant: Tenant! @relation
   templateParameters: [TemplateParameter]
+  documents: [Document] @relation
+  tenant: Tenant @relation
 }
 
 type TemplateParameter @embedded {
@@ -22,8 +26,16 @@ type TemplateParameter @embedded {
   placeHolder: String
 }
 
+type Document {
+  name: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  tenant: Tenant @relation
+  template: Template @relation
+}
+
 type Query {
-  getCurrentUser: User! @resolver
+  getCurrentUser: User! @resolve  
 }
 
 type Mutation {

@@ -15,4 +15,13 @@ export const templateUpdated = (template: TemplateModel): IAction => ({
 export const templateFetched = (template: TemplateModel): IAction => ({
   type: TemplateActionTypes.TemplateFetched,
   payload: template
-})
+});
+
+export const templatesFetchFailed = (): IAction => ({
+  type: TemplateActionTypes.TemplatesFetchFailed
+});
+
+export const templatesFetchSuccess = (templates: TemplateModel[]): IAction => ({
+  type: TemplateActionTypes.TemplatesFetchSuccess,
+  payload: templates
+});

@@ -24,6 +24,7 @@ const userReducer = (state: IUserState = initialState, action: IAction ): IUserS
         name: user.name,
         _id: user._id,
         tenant: user.tenant,
+        isAuthenticated: true,
       };
     case UserActionTypes.LogoutSucceed:
       return initialState;

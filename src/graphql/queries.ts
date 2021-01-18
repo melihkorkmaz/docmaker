@@ -32,3 +32,17 @@ export const getTemplateById = gql`
     }
   }
 `;
+
+export const getTenantTemplates = gql`
+  query getTenantTemplates($id: ID!) {
+    findTenantByID(id: $id) {
+      templates {
+        data {
+          _id,
+          name,
+          language
+        }
+      }
+    }
+  }
+`;

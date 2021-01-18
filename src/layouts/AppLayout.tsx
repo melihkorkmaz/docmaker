@@ -6,6 +6,7 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 // Components
 import TopHeader from '../components/TopHeader';
 import Dashboard from '../modules/dashboard/Dashboard';
+import CreateDocument from '../modules/documents/CreateDocument';
 import CreateTemplate from '../modules/templates/CreateTemplate';
 import ViewTemplate from '../modules/templates/ViewTemplate';
 
@@ -95,6 +96,7 @@ const AppLayout = () => {
             <Route exact={true} path="/app/dashboard" component={Dashboard} />
             <Route exact={true} path="/app/templates/create" component={CreateTemplate} />
             <Route path="/app/templates/view/:id" component={ViewTemplate} />
+            <Route path="/app/documents/create" component={CreateDocument} />
           </Switch>
         </Pane>
       </Pane>

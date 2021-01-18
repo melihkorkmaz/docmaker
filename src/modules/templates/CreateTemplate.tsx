@@ -17,7 +17,7 @@ const CreateTemplate =  () => {
   const template = useSelector(templateSelectors.getCurrentTemplate);
   
   const handleSave = (data: TemplateModel) => {
-    dispatch(templateOperations.createTemplate(data));
+    dispatch(templateOperations.createTemplate(new TemplateModel(data)));
   };
 
   useEffect(() => {

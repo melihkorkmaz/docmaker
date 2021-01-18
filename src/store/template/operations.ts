@@ -8,34 +8,54 @@ import * as actions from './actions';
 
 import IState from '../IState';
 
-export const createTemplate = (templateFormData: TemplateModel) => async (dispatch: Dispatch, getState: () => IState) => {
+export const createTemplate = (template: TemplateModel) => async (dispatch: Dispatch, getState: () => IState) => {
   const state = getState();
   const user = userSelectors.getUser(state);
   // tslint:disable-next-line: no-non-null-assertion
-  templateFormData.tenant = user?.tenant!;
+  template.tenant = user?.tenant!;  
   
-  const template = new TemplateModel(templateFormData);
-  const response = await template.save();
-  
-  response.status ? 
-    dispatch(actions.templateCreated(template)) : dispatch(appActions.setDangerToast(response.error));
+  try {
+    await template.save();
+    dispatch(actions.templateCreated(template));
+  } catch (err) {
+    dispatch(appActions.setDangerToast(err.message));
+  }
 };
 
 export const getTemplate = (id: string) => async (dispatch: Dispatch) => {
   const template = new TemplateModel({ _id: id });
-  const response = await template.fetch();
+  
+  try {
+    await template.fetch();
+    dispatch(actions.templateFetched(template));
+  } catch (err) {
+    dispatch(appActions.setDangerToast(err.message))    
+  }
 
-  response.status ? 
-    dispatch(actions.templateFetched(template)) : dispatch(appActions.setDangerToast(response.error));
 };
 
 export const updateTemplate = (template: TemplateModel) => async (dispatch: Dispatch) => {
-  const response = await template.save();
   
-  if (response.status) {
+  try {
+    await template.save();
     dispatch(actions.templateUpdated(template));
     dispatch(appActions.setSuccessToast('Done', 'The template has been saved successfully.'));
-  } else {
-    dispatch(appActions.setDangerToast(response.error))
+  } catch (err) {
+    dispatch(appActions.setDangerToast(err.message))
   }
 };
+
+export const getTemplates = () => async (dispatch: Dispatch, getState: () => IState) => {
+  const tenant = userSelectors.getTenant(getState());
+
+  try {
+    if (!tenant) {
+      throw new Error('Tenant is empty!');
+    }
+
+    const res = await tenant.getTenantTemplates();
+    dispatch(actions.templatesFetchSuccess(res));
+  } catch (error) {
+    dispatch(actions.templatesFetchFailed());
+  }
+}

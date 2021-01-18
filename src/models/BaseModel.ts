@@ -1,26 +1,36 @@
-import axios from 'axios';
-import { RequestDocument, Variables } from "graphql-request/dist/types";
 import 'reflect-metadata';
-import { default as graphqlClient } from '../graphql/graphqlClient';
+
+import IService from '../services/IService';
 
 type Indexable = { [key: string]: any }
 
 type Constructor<T = any> = new(...args: any[]) => T
 
 export default abstract class BaseModel<T> {
-  
-  protected async requestToDB<D>(query: RequestDocument, variables?: Variables): Promise<T | D | string> {
-    return graphqlClient.request(query, variables).then(res => {
-      // tslint:disable-next-line: no-unsafe-any
-      return res[Object.keys(res)[0]];
-    });
+  public abstract _id?: string;
+  protected service: IService<T>;
+
+  constructor(_service: IService<T>) {
+    this.service = _service;
+  }
+
+  public async save() {
+    if (!this._id) {
+      const res = await this.service.create(this as unknown as T);
+      this.populateModel(res);
+
+      return;
+    }
+    const res = await this.service.update(this as unknown as T);
+    this.populateModel(res);
+  }
+
+  public async fetch() {
+    const res = await this.service.read(this._id);
+    this.populateModel(res);
   }
   
-  protected async postToAPI<D>(endpoint: string, data?: any): Promise<T | D | string> {
-    return axios.post(`/.netlify/functions/${endpoint}`, data).then(res => res.data)
-  }
-  
-  protected initModel(data?: any) {
+  protected populateModel(data?: any) {
     if (!data) {
       return;
     }

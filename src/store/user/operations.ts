@@ -18,9 +18,10 @@ export const logout = () => (dispatch: Dispatch) => {
 };
 
 export const getCurrent = () => async (dispatch: Dispatch) => {
+  const user = new UserModel();
+  
   try {
-    const user = new UserModel();
-    await user.fetchUser();
+    await user.fetch();
     dispatch(actions.getCurrentUser(user));
   } catch (err) {
     logout()(dispatch);
@@ -33,15 +34,16 @@ export const login = (request: UserModel) => async (dispatch: Dispatch) => {
     password: request.password,
   });
   
-  const res = await user.login();
-  
-  if (res.status) {
+  try {
+    const token = await user.login();
+    
+    localStorage.setItem('token', token);
+    setClientToken(token);
     await getCurrent()(dispatch);
     dispatch(actions.loginSucceed());
-  } else {
-    dispatch(appActions.setDangerToast('Login failed!', res.error));
+  } catch (err) {
+    dispatch(appActions.setDangerToast('Login failed!', err.message));
   }
-   
 };
 
 export const register = (request: UserModel) => async (dispatch: Dispatch) => {
@@ -51,11 +53,13 @@ export const register = (request: UserModel) => async (dispatch: Dispatch) => {
     password: request.password
   });
   
-  const res = await user.save();
-  
-  return res.status ? 
-    dispatch(appActions.setSuccessToast('Sucess', 'You have signed up successfully!')):
-    dispatch(appActions.setDangerToast(res.error));
+  try {
+    await user.save();
+    dispatch(appActions.setSuccessToast('Sucess', 'You have signed up successfully!'))
+
+  } catch (err) {
+    dispatch(appActions.setDangerToast(err.message));
+  }
 };
 
 export const createTenant = (name: string) => async (dispatch: Dispatch, getState: () => IState) => {
@@ -68,9 +72,10 @@ export const createTenant = (name: string) => async (dispatch: Dispatch, getStat
     
   user.tenant = new TenantModel({ name });
 
-  const res = await user.createAndConnectTenans();
-
-  return res.status ? 
-    dispatch(actions.createTenant(user)) :
-    dispatch(appActions.setDangerToast(res.error));
+  try {
+    await user.addTenant();
+    dispatch(actions.createTenant(user));
+  } catch (err) {
+    dispatch(appActions.setDangerToast(err.message));
+  }
 }

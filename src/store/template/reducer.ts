@@ -12,6 +12,11 @@ const templateReducer = (state: ITemplateState = {}, action: IAction): ITemplate
         ...state,
         currentTemplate: action.payload as TemplateModel,
       };
+    case TemplateActionTypes.TemplatesFetchSuccess:
+      return {
+        ...state,
+        all: action.payload as TemplateModel[],
+      }
     default:
       return state;
   }
