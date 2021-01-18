@@ -12,7 +12,7 @@ export const createTemplate = (template: TemplateModel) => async (dispatch: Disp
   const state = getState();
   const user = userSelectors.getUser(state);
   // tslint:disable-next-line: no-non-null-assertion
-  template.tenant = user?.tenant!;  
+  template.tenant = user?.tenant!;
   
   try {
     await template.save();

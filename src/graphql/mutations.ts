@@ -77,3 +77,18 @@ export const updateTemplateMutation = gql`
     }
   }
 `;
+
+export const createDocumentMutation = gql`
+  mutation createDocument($document: DocumentInput!) {
+    createDocument(data: $document) {
+      _id
+      name
+      majorVersion
+      minorVersion
+      template {
+        _id
+        name
+      }
+    }
+  }
+`

@@ -1,39 +1,42 @@
 import { Button, FormField, majorScale, Pane, Select, TextInputField } from 'evergreen-ui';
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-// import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Components
 import Card from '../../components/Card';
 import PageTitle from '../../components/PageTitle';
 
-import { templateOperations } from '../../store/template';
+import { documentOperations } from '../../store/document';
+import { templateOperations, templateSelectors } from '../../store/template';
 
 import DocumentModel from '../../models/DocumentModel';
 
 const CreateDocument = () => {
   const { control, errors, handleSubmit } = useForm<DocumentModel>();
   const dispatch = useDispatch();
-  // const history = useHistory();
-  // const template = useSelector(templateSelectors.getCurrentTemplate);
+  const templates = useSelector(templateSelectors.getTemplates);
 
-  // const handleSave = (data: TemplateModel) => {
-  //   dispatch(templateOperations.createTemplate(data));
-  // };
-
-  // useEffect(() => {
-  //   if (template) {
-  //     history.push(`/app/templates/view/${template._id}`);
-  //   }
-  // }, [template, history]);
 
   useEffect(() =>{
     dispatch(templateOperations.getTemplates());
   }, [dispatch]);
 
-  const onSubmit = () => {
-    console.log('here')
+  const onSubmit = (data: any) => {
+    if (!templates) {
+      return;
+    }
+
+    const document = new DocumentModel(data);
+    const selectedTemplate = templates.find(template => template._id === data.template);
+    
+    if (!selectedTemplate) {
+      return;
+    }
+
+    document.template = selectedTemplate;
+
+    dispatch(documentOperations.createNewDocument(document));
   };
 
   return (
@@ -61,30 +64,28 @@ const CreateDocument = () => {
             )}
           />
 
-          <FormField label="Template *" marginBottom={majorScale(3)}>
-            <Controller
-              name="template"
-              control={control}
-              rules={{ required: true }}
-              render={props =>
-                <Select width="100%" value={props.value} onChange={props.onChange}>
-                  <option value="en">English</option>
-                  <option value="tr">Turkish</option>
-                </Select>
-              }
-            />
-          </FormField>
-
-
+          {templates && 
+            <FormField label="Template *" marginBottom={majorScale(3)}>
+              <Controller
+                name="template"
+                control={control}
+                rules={{ required: true }}
+                defaultValue={templates[0]._id}
+                render={props =>
+                  <Select width="100%" value={props.value} onChange={props.onChange}>
+                    {templates.map(template => (
+                      // tslint:disable-next-line: react-a11y-role-has-required-aria-props
+                      <option key={template._id} value={template._id}>{template.name}</option>
+                    ))}
+                  </Select>
+                }
+              />
+            </FormField>
+          }
           <Pane display="flex" flexDirection="row-reverse">
             <Button type="submit" intent="success" appearance="primary" height={majorScale(5)} paddingX={majorScale(5)}>
               Save
             </Button>
-            {/* {onCancel &&
-              <Button height={majorScale(5)} paddingX={majorScale(5)} marginRight={majorScale(2)}>
-                Cancel
-              </Button>
-            } */}
           </Pane>
         </form>
       </Card>
